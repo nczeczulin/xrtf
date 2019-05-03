@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 ext_modules = [
     Extension('xrtf._xrtf',
-        sources=['ext/_xrtfmodule.c'],
+        sources=['ext/module.c', 'ext/compression.c'],
     )
 ]
 
