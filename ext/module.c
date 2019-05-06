@@ -1,6 +1,7 @@
 #include <Python.h>
 
 int xrtf_compression_exec(PyObject *m);
+int xrtf_tokenizer_exec(PyObject* m);
 
 PyObject *xrtf_Error;
 
@@ -25,6 +26,7 @@ PyDoc_STRVAR(xrtf_doc, "The xrtf module");
 static PyModuleDef_Slot xrtf_slots[] = {
     {Py_mod_exec, xrtf_exec},
     {Py_mod_exec, xrtf_compression_exec},
+    {Py_mod_exec, xrtf_tokenizer_exec},
     {0, NULL}
 };
 
