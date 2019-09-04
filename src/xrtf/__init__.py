@@ -7,4 +7,6 @@ except DistributionNotFound:
 finally:
     del get_distribution, DistributionNotFound
 
-from ._xrtf import *
+from ._xrtf import Error
+from ._xrtf import COMPRESSED, UNCOMPRESSED
+from ._xrtf import compress, decompress, parse_header

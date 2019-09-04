@@ -5,7 +5,8 @@ int xrtf_tokenizer_exec(PyObject* m);
 
 PyObject *xrtf_Error;
 
-static int xrtf_exec(PyObject *m)
+static int
+xrtf_exec(PyObject *m)
 {
     if (xrtf_Error == NULL) {
         xrtf_Error = PyErr_NewException("xrtf.Error", NULL, NULL);
@@ -32,7 +33,7 @@ static PyModuleDef_Slot xrtf_slots[] = {
 
 static PyModuleDef xrtf_def = {
     PyModuleDef_HEAD_INIT,
-    "_xrtf",
+    "xrtf._xrtf",
     xrtf_doc,
     0,    /* m_size */
     NULL, /* m_methods */
@@ -42,4 +43,8 @@ static PyModuleDef xrtf_def = {
     NULL, /* m_free */
 };
 
-PyMODINIT_FUNC PyInit__xrtf() { return PyModuleDef_Init(&xrtf_def); }
+PyMODINIT_FUNC
+PyInit__xrtf()
+{
+    return PyModuleDef_Init(&xrtf_def);
+}

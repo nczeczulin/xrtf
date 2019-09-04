@@ -65,7 +65,8 @@ typedef struct {
     char *buf_end;
 } Tokenizer;
 
-static int Tokenizer_init(Tokenizer *self, PyObject *args, PyObject *kwargs)
+static int
+Tokenizer_init(Tokenizer *self, PyObject *args, PyObject *kwargs)
 {
     if (self->buffer.obj)
         PyBuffer_Release(&self->buffer);
@@ -79,14 +80,16 @@ static int Tokenizer_init(Tokenizer *self, PyObject *args, PyObject *kwargs)
     return 0;
 }
 
-static void Tokenizer_dealloc(Tokenizer *self)
+static void
+Tokenizer_dealloc(Tokenizer *self)
 {
     if (self->buffer.obj)
         PyBuffer_Release(&self->buffer);
     Py_TYPE(self)->tp_free(self);
 }
 
-static PyObject* text_token(Tokenizer *self, char *start)
+static PyObject *
+text_token(Tokenizer *self, char *start)
 {
     PyObject *type;
     PyObject *text;
@@ -107,7 +110,8 @@ fail:
     return NULL;
 }
 
-static PyObject* group_token(Tokenizer *self, bool start)
+static PyObject *
+group_token(Tokenizer *self, bool start)
 {
     PyObject *type;
     PyObject *result;
@@ -133,7 +137,8 @@ fail:
     return NULL;
 }
 
-static PyObject* control_token(Tokenizer *self)
+static PyObject *
+control_token(Tokenizer *self)
 {
     char ch;
     char keyword[33];
@@ -237,7 +242,8 @@ fail:
     return NULL;
 }
 
-static PyObject* Tokenizer_next(Tokenizer *self)
+static PyObject *
+Tokenizer_next(Tokenizer *self)
 {
     char ch;
     int deferred = 0;
@@ -285,7 +291,8 @@ static PyObject* Tokenizer_next(Tokenizer *self)
 
 PyDoc_STRVAR(Tokenizer_read_doc, "read");
 
-PyObject* Tokenizer_read(Tokenizer *self, PyObject *arg)
+static PyObject *
+Tokenizer_read(Tokenizer *self, PyObject *arg)
 {
     long size;
     PyObject *result;
@@ -315,7 +322,7 @@ static PyMethodDef Tokenizer_methods[] = {
 
 PyDoc_STRVAR(Tokenizer_doc, "The Tokenizer class");
 
-PyTypeObject Tokenizer_Type = {
+static PyTypeObject Tokenizer_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "xrtf.Tokenizer",
     .tp_doc = Tokenizer_doc,
@@ -329,7 +336,8 @@ PyTypeObject Tokenizer_Type = {
     .tp_new = PyType_GenericNew
 };
 
-int xrtf_tokenizer_exec(PyObject *m)
+int
+xrtf_tokenizer_exec(PyObject *m)
 {
     if (PyType_Ready(&Tokenizer_Type) < 0)
         goto fail;

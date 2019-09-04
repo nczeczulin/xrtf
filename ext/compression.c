@@ -71,12 +71,14 @@ static const uint32_t crc_table[] = {
     0xb3667a2e, 0xc4614ab8, 0x5d681b02, 0x2a6f2b94, 0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
 };
 
-static uint32_t uint32_from_bytes_le(unsigned char *buf)
+static uint32_t
+uint32_from_bytes_le(unsigned char *buf)
 {
     return (uint32_t)buf[0] | (uint32_t)buf[1] << 8 | (uint32_t)buf[2] << 16 | (uint32_t)buf[3] << 24;
 }
 
-static void uint32_to_bytes_le(uint32_t n, unsigned char *buf)
+static void
+uint32_to_bytes_le(uint32_t n, unsigned char *buf)
 {
     buf[0] = n & 0xff;
     buf[1] = (n >> 8) & 0xff;
@@ -84,12 +86,14 @@ static void uint32_to_bytes_le(uint32_t n, unsigned char *buf)
     buf[3] = (n >> 24) & 0xff;
 }
 
-static uint32_t update_crc(uint32_t crc, unsigned char c)
+static uint32_t
+update_crc(uint32_t crc, unsigned char c)
 {
     return crc_table[(crc ^ c) & 0xff] ^ (crc >> 8);
 }
 
-static uint32_t calculate_crc(unsigned char *buf, ssize_t len)
+static uint32_t
+calculate_crc(unsigned char *buf, ssize_t len)
 {
     uint32_t t = 0;
     for (ssize_t i = 0; i < len; i++)
@@ -97,7 +101,8 @@ static uint32_t calculate_crc(unsigned char *buf, ssize_t len)
     return t;
 }
 
-static bool parse_header(unsigned char *buf, ssize_t len, HDR *hdr)
+static bool
+parse_header(unsigned char *buf, ssize_t len, HDR *hdr)
 {
     if (len < HEADER_LENGTH) {
         PyErr_SetString(xrtf_Error, "not enough data");
@@ -119,7 +124,8 @@ static bool parse_header(unsigned char *buf, ssize_t len, HDR *hdr)
     return true;
 }
 
-static void set_header(
+static void
+set_header(
     unsigned char *buf, uint32_t comp_size, uint32_t raw_size, uint32_t comp_type, uint32_t crc)
 {
     uint32_to_bytes_le(comp_size, buf);
@@ -140,7 +146,8 @@ typedef struct CSTATE {
     int best_match_len;
 } CSTATE;
 
-static void add_byte_to_dict(CSTATE *state, unsigned char c) {
+static void
+add_byte_to_dict(CSTATE *state, unsigned char c) {
 
     state->dict[state->dict_write_offset] = c;
     if (state->dict_end_offset < 4096)
@@ -148,7 +155,8 @@ static void add_byte_to_dict(CSTATE *state, unsigned char c) {
     state->dict_write_offset = (state->dict_write_offset + 1) & 0xfff;
 }
 
-static void try_match(CSTATE *state, int match_offset)
+static void
+try_match(CSTATE *state, int match_offset)
 {
     int max_len = (int)Py_MIN(17, state->src_left);
     int dict_offset = match_offset;
@@ -170,7 +178,8 @@ static void try_match(CSTATE *state, int match_offset)
     }
 }
 
-static int find_longest_match(CSTATE *state)
+static int
+find_longest_match(CSTATE *state)
 {
     int final_offset = state->dict_write_offset & 0xfff;
     int match_offset = 0;
@@ -195,7 +204,8 @@ PyDoc_STRVAR(xrtf_compress_doc,
     "\n"
     "Compress bytes data.");
 
-PyObject* xrtf_compress(PyObject *self, PyObject *args, PyObject *kwargs)
+static PyObject *
+xrtf_compress(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *keywords[] = { "", "comp_type", NULL };
     Py_buffer buffer = { NULL, NULL };
@@ -337,7 +347,8 @@ PyDoc_STRVAR(xrtf_decompress_doc,
     "\n"
     "Decompress bytes data.");
 
-PyObject *xrtf_decompress(PyObject *self, PyObject *arg)
+static PyObject *
+xrtf_decompress(PyObject *self, PyObject *arg)
 {
     HDR hdr;
     Py_buffer buffer = { NULL, NULL };
@@ -461,7 +472,8 @@ PyDoc_STRVAR(xrtf_parse_header_doc,
     "\n"
     "Parse data header from bytes.");
 
-PyObject* xrtf_parse_header(PyObject *self, PyObject *arg)
+static PyObject *
+xrtf_parse_header(PyObject *self, PyObject *arg)
 {
     HDR hdr;
     Py_buffer buffer = { NULL, NULL };
@@ -495,7 +507,8 @@ static PyMethodDef xrtf_compression_functions[] = {
     {NULL, NULL, 0, NULL}
 };
 
-int xrtf_compression_exec(PyObject *m)
+int
+xrtf_compression_exec(PyObject *m)
 {
     PyModule_AddFunctions(m, xrtf_compression_functions);
 
